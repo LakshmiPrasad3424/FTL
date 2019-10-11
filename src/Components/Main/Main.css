@@ -1,0 +1,54 @@
+.Main {
+    display: flex;
+    width: 100%;
+}
+
+.Main .Content {
+    width: calc(100% - 240px);
+    margin-left: 240px;
+    height: calc(100vh - 100px);
+}
+
+.Content ul {
+    width: 700px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.Content ul li {
+    width: 50%;
+    background: #fafafa;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .3);
+    max-width: 300px;
+    border-radius: 4px;
+    height: 330px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.Content ul li:-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+}
+
+.Content ul li:-webkit-scrollbar-thumb {
+    background: red;
+}
+
+
+.Content ul li .Innercontent {
+    padding: 40px 30px 60px 30px;
+}
+
+.Innercontent .inner label{
+    display: block;
+    margin-bottom: 30px;
+}
+
+.Innercontent .inner:first-child{
+    margin: 0 0 35px;
+    padding: 0 0 35px;
+}

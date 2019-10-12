@@ -1,42 +1,25 @@
 import React, { Component } from 'react';
 import './Sidebar.css';
+import Flatted from 'flatted';
 
 class Sidebar extends Component {
 
-    state = {
-        btnshow :false,
-        ulshow:true,
-        clsshow:false
+    btnClick = (e) => {
+      e.target.parentNode.firstChild.style.display = "block";
+      e.target.parentNode.lastChild.style.display = "block";
+      e.target.style.display = "none";
     }
-
-    updateDimensions() {
-        if(window.innerWidth < 970) {
-           this.setState({  btnshow :true,
-                ulshow:false,
-            });
-        }
-    }
-
-  /**
-   * Add event listener
-   */
-    componentDidMount() {
-        this.updateDimensions();
-        window.addEventListener("resize", this.updateDimensions);
-    }
-
-    btnClick = () => {
-        this.setState({
-            btnshow :false,
-            ulshow:true,
-            clsshow:true
-        })
+    
+    clsClick = (e) => {
+        e.target.parentNode.parentNode.firstChild.style.display = "none";
+        e.target.parentNode.previousSibling.style.display = "block";
+        e.target.parentNode.style.display = "none";
     }
 
     render() { 
 
         this.items = this.props.prevData.map((item, i) =>
-            <li key={i} onClick={()=>{this.setState({btnshow:true, ulshow:false, clsshow:false});this.props.sidebarClick(i)}}>
+            <li key={i} onClick={()=>{this.props.sidebarClick(i)}}>
                 <div>
                     <label>Amount</label>
                     <span> ${item.amount} USD</span>
@@ -48,13 +31,13 @@ class Sidebar extends Component {
             </li>
         );
         return (<div className="Sidebar">
-            <ul style={{display: this.state.ulshow ? '': 'none'}}>
+            <ul>
                {this.items}
             </ul>
-            <button onClick={this.btnClick} style={{display: this.state.btnshow ? '': 'none'}}>Previous Records</button>
+            <button onClick={((e) => this.btnClick(e))}>Previous Records</button>
 
-            <div className="mobileClose" style={{display: this.state.clsshow ? '': 'none'}}>
-                 <span onClick={()=>{this.setState({btnshow:true, ulshow:false, clsshow:false})}}>&times;</span>
+            <div className="mobileClose">
+                 <span onClick={((e) => this.clsClick(e))}>&times;</span>
             </div>
             
         </div>);

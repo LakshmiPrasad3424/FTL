@@ -16,6 +16,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .Content ul li {
@@ -26,6 +27,7 @@
     border-radius: 4px;
     height: 330px;
     max-height: 400px;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
@@ -43,12 +45,41 @@
     padding: 40px 30px 60px 30px;
 }
 
-.Innercontent .inner label{
+.Innercontent .inner label {
     display: block;
     margin-bottom: 30px;
+    font-weight: 600;
 }
 
-.Innercontent .inner:first-child{
+.Innerconnect1 .inner label {
+    margin-bottom: 15px;
+}
+
+.Innercontent .inner:first-child {
     margin: 0 0 35px;
     padding: 0 0 35px;
+}
+
+@media only screen and (max-width:970px) {
+    .Main .Content {
+        width: 100%;
+        height: initial;
+        margin: 0;
+        padding: 60px 20px 100px;
+    }
+
+    .Content ul {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width:680px) {
+    .Content ul {
+        justify-content: center;
+    }
+
+    .Content ul li {
+        width: 100%;
+        margin-bottom: 40px;
+    }
 }

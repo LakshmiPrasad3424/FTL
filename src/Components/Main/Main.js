@@ -11,10 +11,10 @@ class Main extends Component {
         amount: 500,
         months: 6,
         roi:0,
-        emi:0
+        emi:0,
+        history:[]
     }
 
-   
     componentDidMount() {
         axios.get(`https://ftl-frontend-test.herokuapp.com/interest?amount=${this.state.amount}&numMonths=${this.state.months}
         `).then(res => {
@@ -25,41 +25,64 @@ class Main extends Component {
             })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-		if (
-			this.state.amount !== prevState.amount ||
-			this.state.months !== prevState.months
-		) {
-			axios
-				.get(
-					`https://ftl-frontend-test.herokuapp.com/interest?amount=${
-						this.state.amount
-					}&numMonths=${this.state.months}`
-				)
-				.then(res => {
-					console.log(res.data);
-					if (res.data.status && res.data.status === "error") {
-						console.log("Error occurred");
-					} else {
-						this.setState({
-                            roi:res.data.interestRate,
-                            emi:res.data.monthlyPayment.amount
-						});
-                    }
-                    localStorage.setItem('prasad','qwqwqwq');
-                    localStorage.getItem('prasad');
-				})
-				.catch(e => console.log(e));
-		}
-    }
+    fetchDetails = () => {
+        axios
+            .get(
+                `https://ftl-frontend-test.herokuapp.com/interest?amount=${
+                    this.state.amount
+                }&numMonths=${this.state.months}`
+            )
+            .then(res => {
+                if (res.data.status && res.data.status === "error") {
+                    console.log("Error occurred");
+                } else {
+                    let history = this.state.history;
     
+                    this.setState({
+                        roi:res.data.interestRate,
+                        emi:res.data.monthlyPayment.amount,
+                        history:[...this.state.history,{amount:this.state.amount,months:this.state.months}]
+                    });
+
+                    localStorage.setItem('list',JSON.stringify(history));
+                
+                }
+            })
+            .catch(e => console.log(e));
+	}
+
     formatAmountLabel = val => {
 		return `$${val}`;
-	};
+    };
+    sidebarClick = (index)=>{
+        axios
+        .get(
+            `https://ftl-frontend-test.herokuapp.com/interest?amount=${
+                this.state.history[index].amount
+            }&numMonths=${this.state.history[index].months}`
+        )
+        .then(res => {
+            if (res.data.status && res.data.status === "error") {
+                console.log("Error occurred");
+            } else {
+                let history = this.state.history;
 
-    render() { 
+                this.setState({
+                    amount:res.data.principal.amount,
+                    months:res.data.numPayments,
+                    roi:res.data.interestRate,
+                    emi:res.data.monthlyPayment.amount,
+                });
+            
+            }
+        })
+        .catch(e => console.log(e));
+       
+    }
+    
+    render() {
         return (<div className="Main">
-            <Sidebar/>
+            <Sidebar prevData={this.state.history} sidebarClick={(index)=>this.sidebarClick(index)}/>
             <div className="Content">
                 <ul>
                     <li>
@@ -67,11 +90,12 @@ class Main extends Component {
                             <div className="inner">
                                 <label>Total Amount (In USD) :</label>
                                 <InputRange
-                                    maxValue={5000} USD
-                                    minValue={500} USD
+                                    maxValue={5000}
+                                    minValue={500} 
                                     step={500}
                                     value={this.state.amount}
                                     onChange={value => this.setState({ amount:value })}
+                                    onChangeComplete={value => this.fetchDetails()}
                                     formatLabel={this.formatAmountLabel} />
                             </div>
                            <div className="inner">
@@ -81,19 +105,21 @@ class Main extends Component {
                                         minValue={6}
                                         step={1}
                                         value={this.state.months}
-                                        onChange={value => this.setState({ months:value })} />
+                                        onChange={value => this.setState({ months:value })}
+                                        onChangeComplete={value => this.fetchDetails()} />
                            </div>
+
                         </div>
                         
                     </li>
                     <li>
-                        <div className="Innercontent">
+                        <div className="Innercontent Innerconnect1">
                             <div className="inner">
                                 <label>Rate of Interest :</label>
                                 <span>${this.state.roi} USD</span>
                             </div>
                             <div className="inner">
-                                <label>Amount to be Paid :</label>
+                                <label>EMI :</label>
                                 <span>${this.state.emi} USD</span>
                             </div>
                         </div>

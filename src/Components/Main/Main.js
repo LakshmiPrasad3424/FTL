@@ -16,11 +16,14 @@ class Main extends Component {
     }
 
     componentDidMount() {
+       let reload = JSON.parse(localStorage.getItem('list'))||[];
+
         axios.get(`https://ftl-frontend-test.herokuapp.com/interest?amount=${this.state.amount}&numMonths=${this.state.months}
         `).then(res => {
                 this.setState({ 
                     roi:res.data.interestRate,
-                    emi:res.data.monthlyPayment.amount
+                    emi:res.data.monthlyPayment.amount,
+                    history:reload
                 });
             })
     }
@@ -36,16 +39,16 @@ class Main extends Component {
                 if (res.data.status && res.data.status === "error") {
                     console.log("Error occurred");
                 } else {
-                    let history = this.state.history;
-    
                     this.setState({
                         roi:res.data.interestRate,
                         emi:res.data.monthlyPayment.amount,
                         history:[...this.state.history,{amount:this.state.amount,months:this.state.months}]
                     });
-
+                    let history = this.state.history;
+                    if(history.length>15){
+                        history.shift()
+                    }
                     localStorage.setItem('list',JSON.stringify(history));
-                
                 }
             })
             .catch(e => console.log(e));
@@ -65,8 +68,6 @@ class Main extends Component {
             if (res.data.status && res.data.status === "error") {
                 console.log("Error occurred");
             } else {
-                let history = this.state.history;
-
                 this.setState({
                     amount:res.data.principal.amount,
                     months:res.data.numPayments,
@@ -77,7 +78,6 @@ class Main extends Component {
             }
         })
         .catch(e => console.log(e));
-       
     }
     
     render() {
